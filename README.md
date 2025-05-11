@@ -31,7 +31,7 @@ Add the package by going to your Xcode project:
     ```
 
 ## Usage
-> Check out the full example in this [here](https://github.com/PierreJanineh-com/ProgressUI/Example).
+> Check out the full example in this [here](./Example).
 
 ### Basic Usage
 ``` swift
