@@ -61,9 +61,11 @@ public struct Options {
 	 
 	 Default: `Animation.easeInOut(duration: 0.5)`.
 	 
+	 > This is a closure that returns an `Animation`. You can set it to a static animation (e.g. `{ .easeInOut(duration: 0.5) }`) or a dynamic closure that returns a different animation each time it is called. This enables dynamic animation strategies, such as random or state-dependent animations.
+	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setAnimation(_:)``.
 	 */
-	public var animation: Animation = .easeInOut(duration: 0.5)
+	public var animation: () -> Animation = { .easeInOut(duration: 0.5) }
 	
 	/**
 	 The width of the inner progress.
