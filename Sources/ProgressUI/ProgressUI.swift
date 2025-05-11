@@ -132,7 +132,7 @@ public struct ProgressUI: View {
 						.rotationEffect(rotationAngle)
 				}
 			}
-			.animation(vm.animation, value: currentProgress)
+			.animation(vm.animation(), value: currentProgress)
 		}
 		.aspectRatio(1, contentMode: .fit)
 		.onAppear {

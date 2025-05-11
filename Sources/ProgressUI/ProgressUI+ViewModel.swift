@@ -24,7 +24,9 @@ extension ProgressUI {
 		/// The maximum value for the animated width effect at the start of progress.
 		@Published public var animationMaxValue: CGFloat? = 0.03
 		/// The animation for the progress arc.
-		@Published public var animation: Animation = .easeInOut(duration: 0.5)
+		///
+		/// > This is a closure that returns an `Animation`. You can set it to a static animation (e.g. `{ .easeInOut(duration: 0.5) }`) or a dynamic closure that returns a different animation each time it is called. This enables dynamic animation strategies, such as random or state-dependent animations.
+		@Published public var animation: () -> Animation = { .easeInOut(duration: 0.5) }
 		/// The width of the inner progress arc.
 		@Published public var innerProgressWidth: CGFloat? = nil
 		/// The color of the inner progress arc.

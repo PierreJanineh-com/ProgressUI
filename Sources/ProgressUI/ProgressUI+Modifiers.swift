@@ -54,7 +54,9 @@ extension ProgressUI {
 	/// - Parameter value: The maximum value for animation.
 	/// - Returns: A modified ProgressUI instance.
 	///
-	/// Default: `0.03`. Setting this to `nil` **disables the growing animation in the beginning of the animation**.
+	/// Default: `0.03`.
+	///
+	/// > Setting this to `nil` **disables the growing animation in the beginning of the animation**.
 	public func setAnimationMaxValue(_ value: CGFloat?) -> Self {
 		vm.animationMaxValue = value
 		return self
@@ -65,7 +67,21 @@ extension ProgressUI {
 	/// - Returns: A modified ProgressUI instance.
 	///
 	/// Default: `Animation.easeInOut(duration: 0.5)`.
+	///
+	/// > This overload is for static animation. If you want dynamic animation (e.g. random or state-dependent), use the closure overload below.
 	public func setAnimation(_ animation: Animation) -> Self {
+		vm.animation = { animation }
+		return self
+	}
+	
+	/// Sets the animation for the progress arc.
+	/// - Parameter animation: A closure that returns the desired animation.
+	/// - Returns: A modified ProgressUI instance.
+	///
+	/// Default: `Animation.easeInOut(duration: 0.5)`.
+	///
+	/// > This overload allows for dynamic animation strategies. The closure will be called each time an animation is needed, so you can return a different animation each time (e.g. random, state-dependent, etc).
+	public func setAnimation(_ animation: @escaping () -> Animation) -> Self {
 		vm.animation = animation
 		return self
 	}
