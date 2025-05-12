@@ -277,7 +277,7 @@ public struct ProgressUI: View {
 	
 	/// The current status for dynamic coloring.
 	private var status: (any CaseIterableAndProgressable)? {
-		statusType?.calculate(from: progress)
+		statusType?.calculate(from: progress) as (any CaseIterableAndProgressable)?
 	}
 	
 	/// The main progress color.
