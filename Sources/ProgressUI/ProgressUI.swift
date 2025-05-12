@@ -194,7 +194,7 @@ public struct ProgressUI: View {
 														y: height / 2),
 										radius: width / 3,
 										startAngle: Angle(degrees: -90),
-										delta: Angle(degrees: vm.isClockwise ? 360 : -360))
+										delta: Angle(degrees: vm.isClockwise() ? 360 : -360))
 				}
 				
 				//MARK: - Track
@@ -208,11 +208,11 @@ public struct ProgressUI: View {
 						color,
 						style: StrokeStyle(
 							lineWidth: (
-								currentProgress > vm.animationMaxValue ?? 0 ?
+								currentProgress > vm.animationMaxValue() ?? 0 ?
 								trackWidth(geometry) :
 									animatedWidth(currentProgress, geometry)
 							),
-							lineCap: vm.isRounded ? .round : .butt
+							lineCap: vm.isRounded() ? .round : .butt
 						)
 					)
 					.rotationEffect(rotationAngle)
@@ -225,7 +225,7 @@ public struct ProgressUI: View {
 							innerColor,
 							style: StrokeStyle(
 								lineWidth: innerProgressWidth(geometry),
-								lineCap: vm.isRounded ? .round : .butt
+								lineCap: vm.isRounded() ? .round : .butt
 							)
 						)
 						.rotationEffect(rotationAngle)
@@ -235,7 +235,7 @@ public struct ProgressUI: View {
 		}
 		.aspectRatio(1, contentMode: .fit)
 		.onAppear {
-			guard vm.isSpinner else { return }
+			guard vm.isSpinner() else { return }
 			timer = Timer.publish(
 				every: timeIntervalPerDegree,
 				on: .main,
@@ -244,7 +244,7 @@ public struct ProgressUI: View {
 			_ = timer.connect()
 		}
 		.onReceive(timer) { _ in
-			if vm.isClockwise {
+			if vm.isClockwise() {
 				rotationAngle = .degrees(rotationAngle.degrees + 1)
 			} else {
 				rotationAngle = .degrees(rotationAngle.degrees - 1)
@@ -264,24 +264,24 @@ public struct ProgressUI: View {
 	
 	/// The main progress color.
 	private var color: Color {
-		status?.color ?? vm.progressColor
+		status?.color ?? vm.progressColor()
 	}
 	
 	/// The inner progress color.
 	private var innerColor: Color? {
-		status?.innerColor ?? vm.innerProgressColor
+		status?.innerColor ?? vm.innerProgressColor()
 	}
 	
 	/// The track/background color.
 	private var trackColor: Color {
-		vm.trackColor
+		vm.trackColor()
 	}
 	
 	/// Determines the width of the track.
 	private func trackWidth(_ geometry: GeometryProxy) -> CGFloat {
-		if let trackWidth = vm.trackWidth { return trackWidth }
+		if let trackWidth = vm.trackWidth() { return trackWidth }
 		
-		return switch vm.size {
+		return switch vm.size() {
 			case .large: 45
 			case .small: 15
 		}
@@ -289,9 +289,9 @@ public struct ProgressUI: View {
 	
 	/// Determines the width of the inner progress.
 	private func innerProgressWidth(_ geometry: GeometryProxy) -> CGFloat {
-		if let innerProgressWidth = vm.innerProgressWidth { return innerProgressWidth }
+		if let innerProgressWidth = vm.innerProgressWidth() { return innerProgressWidth }
 		
-		return switch vm.size {
+		return switch vm.size() {
 			case .large: 5
 			case .small: 2.5
 		}
@@ -302,7 +302,7 @@ public struct ProgressUI: View {
 		_ value: CGFloat,
 		_ geometry: GeometryProxy
 	) -> CGFloat {
-		guard let maxValue = vm.animationMaxValue else { return trackWidth(geometry) }
+		guard let maxValue = vm.animationMaxValue() else { return trackWidth(geometry) }
 		
 		let percentage = (value / maxValue).clamped(to: 0...1)
 		return percentage * trackWidth(geometry)
@@ -310,7 +310,7 @@ public struct ProgressUI: View {
 	
 	/// The time interval for each degree of spinner rotation.
 	private var timeIntervalPerDegree: TimeInterval {
-		return vm.spinnerCycleDuration / 360
+		return vm.spinnerCycleDuration() / 360
 	}
 }
 
