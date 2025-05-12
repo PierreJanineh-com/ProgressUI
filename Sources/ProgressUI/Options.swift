@@ -65,7 +65,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setAnimation(_:)``.
 	 */
-	public var animation: () -> Animation = { .easeInOut(duration: 0.5) }
+	public var animation: Animation = .easeInOut(duration: 0.5)
 	
 	/**
 	 The width of the inner progress.
@@ -111,7 +111,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setIsSpinner(_:)``.
 	 */
-	public var isSpinner: Bool = true
+	public var isSpinner: Bool = false
 	
 	/**
 	 The spinner duration in seconds for a full spin cycle.
