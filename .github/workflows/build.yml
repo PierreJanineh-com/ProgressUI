@@ -11,6 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Show Xcode version
+        run: |
+          xcodebuild -version
+          swift --version
+
       - name: Build Swift Package
         run: swift build --build-tests
 
