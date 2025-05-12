@@ -20,7 +20,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setSize(_:)``.
 	 */
-	public var size: () -> ProgressSize = { .large }
+	public var size: ProgressSize = .large
 	
 	/**
 	 The color of the empty progress track.
@@ -29,14 +29,14 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setTrackColor(_:)``.
 	 */
-	public var trackColor: () -> Color = { .black }
+	public var trackColor: Color = .black
 	
 	/**
 	 The width of the empty progress track.
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setTrackWidth(_:)``.
 	 */
-	public var trackWidth: () -> CGFloat? = { nil }
+	public var trackWidth: CGFloat? = nil
 	
 	/**
 	 The progress color.
@@ -45,7 +45,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setProgressColor(_:)``.
 	 */
-	public var progressColor: () -> Color = { .green }
+	public var progressColor: Color = .green
 	
 	/**
 	 The maximum value for animating progress growth.
@@ -54,7 +54,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setAnimationMaxValue(_:)``. Setting this to `nil` **disables the growing animation in the beginning of the animation**.
 	 */
-	public var animationMaxValue: () -> CGFloat? = { 0.03 }
+	public var animationMaxValue: CGFloat? = 0.03
 	
 	/**
 	 The animation to use for animating the progress bar.
@@ -65,7 +65,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setAnimation(_:)``.
 	 */
-	public var animation: () -> Animation = { .easeInOut(duration: 0.5) }
+	public var animation: Animation = .easeInOut(duration: 0.5)
 	
 	/**
 	 The width of the inner progress.
@@ -74,7 +74,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setInnerProgressWidth(_:)``.
 	 */
-	public var innerProgressWidth: () -> CGFloat? = { nil }
+	public var innerProgressWidth: CGFloat? = nil
 	
 	/**
 	 Determines the inner progress path's color.
@@ -83,7 +83,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setInnerProgressColor(_:)``.
 	 */
-	public var innerProgressColor: () -> Color? = { .black.opacity(0.2) }
+	public var innerProgressColor: Color? = .black.opacity(0.2)
 	
 	/**
 	 Determines if the progress track is rounded.
@@ -92,7 +92,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setIsRounded(_:)``.
 	 */
-	public var isRounded: () -> Bool = { true }
+	public var isRounded: Bool = true
 	
 	/**
 	 Determines whether the progress animation should be clockwise.
@@ -101,7 +101,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setIsClockwise(_:)``.
 	 */
-	public var isClockwise: () -> Bool = { true }
+	public var isClockwise: Bool = true
 	
 	//MARK: - Spinner
 	/**
@@ -111,7 +111,7 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setIsSpinner(_:)``.
 	 */
-	public var isSpinner: () -> Bool = { true }
+	public var isSpinner: Bool = false
 	
 	/**
 	 The spinner duration in seconds for a full spin cycle.
@@ -120,5 +120,5 @@ public struct Options {
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setSpinnerCycleDuration(_:)``.
 	 */
-	public var spinnerCycleDuration: () -> TimeInterval = { 1 }
+	public var spinnerCycleDuration: TimeInterval = 1
 }
