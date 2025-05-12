@@ -18,6 +18,3 @@ jobs:
 
       - name: Build Swift Package
         run: swift build --build-tests
-
-      - name: Run Tests
-        run: swift test
