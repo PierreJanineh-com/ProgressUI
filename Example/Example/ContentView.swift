@@ -36,29 +36,22 @@ struct ContentView: View {
 					.setSize(.small)
 #endif
 			}
+			.padding()
 			
 			GridRow {
 				GeometryReader { geometry in
-					VStack {
-						let width = geometry.size.width * 0.85
-						ProgressUI(progress: $liveProgress, statusType: Status.self)
-							.setTrackWidth(width * 0.665)
-							.setIsRounded(false)
-							.setInnerProgressColor(.purple)
-							.setTrackColor(.gray.opacity(0.4))
-							.setAnimationMaxValue(nil)
-							.setAnimation(.bouncy)
-							.onReceive(liveTimer) { _ in
-								liveProgress = CGFloat.random(in: 0...1)
-							}
-							.frame(width: width)
-					}
-					.frame(
-						maxWidth: .infinity,
-						maxHeight: .infinity,
-						alignment: .center
-					)
+					ProgressUI(progress: $liveProgress, statusType: Status.self)
+						.setTrackWidth(geometry.size.width * 0.5)
+						.setIsRounded(false)
+						.setInnerProgressColor(.purple)
+						.setTrackColor(.gray.opacity(0.4))
+						.setAnimationMaxValue(nil)
+						.setAnimation(.bouncy)
+						.onReceive(liveTimer) { _ in
+							liveProgress = CGFloat.random(in: 0...1)
+						}
 				}
+				.aspectRatio(1, contentMode: .fit)
 				
 				ProgressUI(progress: $loadingProgress, statusType: Status.self)
 					.setTrackWidth(25)
@@ -85,13 +78,10 @@ struct ContentView: View {
 					.setSize(.small)
 #endif
 			}
-			.overlay {
-				
-			}
+			.padding()
 		}
 		.frame(maxWidth: .infinity, alignment: .center)
 		.background(.white)
-		.padding()
 	}
 }
 
