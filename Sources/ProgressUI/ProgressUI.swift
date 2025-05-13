@@ -207,18 +207,23 @@ public struct ProgressUI: View {
 		GeometryReader { geometry in
 			ZStack {
 				let path = Path { path in
-					let width: CGFloat = min(geometry.size.width, geometry.size.height)
-					let height = width
-					path.addRelativeArc(center: CGPoint(x: width / 2,
-														y: height / 2),
-										radius: width / 3,
-										startAngle: Angle(degrees: -90),
-										delta: Angle(degrees: options.isClockwise ? 360 : -360))
+					let maxStrokeWidth = max(trackWidth, innerProgressWidth)
+					let totalWidth: CGFloat = min(geometry.size.width, geometry.size.height)
+					let availableWidth = totalWidth - (maxStrokeWidth * 2)
+					let center = CGPoint(x: totalWidth / 2, y: totalWidth / 2)
+					let radius = (availableWidth / 2) + (maxStrokeWidth / 2)
+					
+					path.addRelativeArc(
+						center: center,
+						radius: radius,
+						startAngle: Angle(degrees: -90),
+						delta: Angle(degrees: options.isClockwise ? 360 : -360)
+					)
 				}
 				
 				//MARK: - Track
 				path
-					.stroke(trackColor, style: StrokeStyle(lineWidth: trackWidth(geometry)))
+					.stroke(trackColor, style: StrokeStyle(lineWidth: trackWidth))
 				
 				//MARK: - Progress
 				path
@@ -228,8 +233,8 @@ public struct ProgressUI: View {
 						style: StrokeStyle(
 							lineWidth: (
 								progress > (options.animationMaxValue ?? 0) ?
-								trackWidth(geometry) :
-									animatedWidth(progress, geometry)
+								trackWidth :
+									animatedWidth(progress)
 							),
 							lineCap: options.isRounded ? .round : .butt
 						)
@@ -243,15 +248,15 @@ public struct ProgressUI: View {
 						.stroke(
 							innerColor,
 							style: StrokeStyle(
-								lineWidth: innerProgressWidth(geometry),
+								lineWidth: innerProgressWidth,
 								lineCap: options.isRounded ? .round : .butt
 							)
 						)
 						.rotationEffect(rotationAngle)
 				}
 			}
-			.animation(options.animation, value: progress)
 		}
+		.animation(options.animation, value: progress)
 		.aspectRatio(1, contentMode: .fit)
 		.onAppear {
 			setSpinnerIfNeeded()
@@ -296,7 +301,7 @@ public struct ProgressUI: View {
 	}
 	
 	/// Determines the width of the track.
-	private func trackWidth(_ geometry: GeometryProxy) -> CGFloat {
+	private var trackWidth: CGFloat {
 		if let trackWidth = options.trackWidth { return trackWidth }
 		
 		return switch options.size {
@@ -306,7 +311,7 @@ public struct ProgressUI: View {
 	}
 	
 	/// Determines the width of the inner progress.
-	private func innerProgressWidth(_ geometry: GeometryProxy) -> CGFloat {
+	private var innerProgressWidth: CGFloat {
 		if let innerProgressWidth = options.innerProgressWidth { return innerProgressWidth }
 		
 		return switch options.size {
@@ -316,14 +321,11 @@ public struct ProgressUI: View {
 	}
 	
 	/// Animates the width of the progress at the start for a growing effect.
-	private func animatedWidth(
-		_ value: CGFloat,
-		_ geometry: GeometryProxy
-	) -> CGFloat {
-		guard let maxValue = options.animationMaxValue else { return trackWidth(geometry) }
+	private func animatedWidth(_ value: CGFloat) -> CGFloat {
+		guard let maxValue = options.animationMaxValue else { return trackWidth }
 		
 		let percentage = (value / maxValue).clamped(to: 0...1)
-		return percentage * trackWidth(geometry)
+		return percentage * trackWidth
 	}
 	
 	/// The time interval for each degree of spinner rotation.
