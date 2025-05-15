@@ -24,8 +24,12 @@ struct ContentView: View {
 					.setSize(.small)
 #endif
 				
-				ProgressUI(progress: 0.5)
-					.setSize(.small)
+				ProgressUI(progress: 0.6)
+					.setTrackWidth(25)
+					.setShape(.linear(10))
+					.setSpinnerCycleDuration(0.0001)
+					.setSpinnerCycleDuration(1)
+					.setIsSpinner()
 				
 				ProgressUI(progress: 0.3)
 					.setProgressColor(.red.opacity(0.5))
@@ -58,7 +62,7 @@ struct ContentView: View {
 					.setInnerProgressWidth(10)
 					.setTrackColor(.black.opacity(0.1))
 					.setIsSpinner()
-					.setAnimationMaxValue(0.5)
+					.setAnimationMaxValue(1)
 					.onReceive(loadingTimer) { _ in
 						if loadingProgress >= 1 {
 							loadingProgress = 0
@@ -103,12 +107,12 @@ enum Status: CaseIterable, Progressable {
 	 */
 	var color: Color {
 		return switch(self){
-			case .Excellent:	.green.opacity(0.5)
-			case .Normal:		.yellow.opacity(0.5)
-			case .SemiNormal:	.orange.opacity(0.5)
-			case .Bad:			.red.opacity(0.5)
-			case .Critical:		.purple.opacity(0.5)
-			case .Danger:		.black.opacity(0.5)
+			case .Excellent:	.green.opacity(0.8)
+			case .Normal:		.yellow.opacity(0.8)
+			case .SemiNormal:	.orange.opacity(0.8)
+			case .Bad:			.red.opacity(0.8)
+			case .Critical:		.purple.opacity(0.8)
+			case .Danger:		.black.opacity(0.8)
 		}
 	}
 	
