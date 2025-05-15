@@ -121,4 +121,13 @@ public struct Options {
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setSpinnerCycleDuration(_:)``.
 	 */
 	public var spinnerCycleDuration: TimeInterval = 1
+	
+	/**
+	 The progress shape..
+	 
+	 Default: ``ProgressUI/Shape/circular``.
+	 
+	 > You can set this with the modifier ``ProgressUI/ProgressUI/setShape(_:)``.
+	 */
+	public var shape: Shape = .circular
 }

@@ -1,8 +1,6 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
 //
 //  ProgressUI.swift
-//  StorageAnalysis
+//  ProgressUI
 //
 //  Created by Pierre Janineh on 19/06/2023.
 //
@@ -10,7 +8,7 @@
 import SwiftUI
 import Combine
 
-private typealias CaseIterableAndProgressable = CaseIterable & Progressable
+internal typealias CaseIterableAndProgressable = CaseIterable & Progressable
 
 /**
  A highly customizable and animated circular progress indicator for SwiftUI.
@@ -86,6 +84,8 @@ private typealias CaseIterableAndProgressable = CaseIterable & Progressable
  ```
  */
 public struct ProgressUI: View {
+	
+	@StateObject private var vm: ViewModel
 	/// The main progress value, either bound or constant.
 	///
 	/// If initialized with a binding, this will update as the binding changes. If initialized with a static value, this remains constant.
@@ -98,12 +98,6 @@ public struct ProgressUI: View {
 	///
 	/// Pass a type conforming to both `CaseIterable` and `Progressable` to enable dynamic coloring based on progress.
 	private let statusType: (any CaseIterableAndProgressable.Type)?
-	
-	/// The current rotation angle for spinner animation.
-	@State private var rotationAngle: Angle = .zero
-	
-	/// The timer for spinner animation.
-	@State private var timer: Timer.TimerPublisher = Timer.publish(every: 0.2, on: .main, in: .common)
 	
 	/**
 	 Creates a progress indicator with adaptable coloring and updating progress value.
@@ -129,6 +123,7 @@ public struct ProgressUI: View {
 		self._progress = progress
 		self.options = options ?? Options()
 		self.statusType = statusType
+		self._vm = .init(wrappedValue: .init())
 	}
 	
 	/**
@@ -152,6 +147,7 @@ public struct ProgressUI: View {
 		self._progress = progress
 		self.options = options ?? Options()
 		self.statusType = nil
+		self._vm = .init(wrappedValue: .init())
 	}
 	
 	/**
@@ -175,6 +171,7 @@ public struct ProgressUI: View {
 		self._progress = .constant(progress)
 		self.options = options ?? Options()
 		self.statusType = nil
+		self._vm = .init(wrappedValue: .init())
 	}
 	
 	/**
@@ -201,140 +198,51 @@ public struct ProgressUI: View {
 		self._progress = .constant(progress)
 		self.options = options ?? Options()
 		self.statusType = statusType
+		self._vm = .init(wrappedValue: .init())
 	}
 	
 	public var body: some View {
-		GeometryReader { geometry in
-			ZStack {
-				let path = Path { path in
-					let width: CGFloat = min(geometry.size.width, geometry.size.height)
-					let height = width
-					path.addRelativeArc(center: CGPoint(x: width / 2,
-														y: height / 2),
-										radius: width / 3,
-										startAngle: Angle(degrees: -90),
-										delta: Angle(degrees: options.isClockwise ? 360 : -360))
-				}
-				
-				//MARK: - Track
-				path
-					.stroke(trackColor, style: StrokeStyle(lineWidth: trackWidth(geometry)))
-				
-				//MARK: - Progress
-				path
-					.trim(from: 0, to: progress)
-					.stroke(
-						color,
-						style: StrokeStyle(
-							lineWidth: (
-								progress > (options.animationMaxValue ?? 0) ?
-								trackWidth(geometry) :
-									animatedWidth(progress, geometry)
-							),
-							lineCap: options.isRounded ? .round : .butt
-						)
-					)
-					.rotationEffect(rotationAngle)
-				
-				//MARK: - Inner
-				if let innerColor {
-					path
-						.trim(from: 0, to: progress)
-						.stroke(
-							innerColor,
-							style: StrokeStyle(
-								lineWidth: innerProgressWidth(geometry),
-								lineCap: options.isRounded ? .round : .butt
-							)
-						)
-						.rotationEffect(rotationAngle)
-				}
-			}
-			.animation(options.animation, value: progress)
-		}
-		.aspectRatio(1, contentMode: .fit)
-		.onAppear {
-			setSpinnerIfNeeded()
-		}
-		.onReceive(timer) { _ in
-			if options.isClockwise {
-				rotationAngle = .degrees(rotationAngle.degrees + 1)
-			} else {
-				rotationAngle = .degrees(rotationAngle.degrees - 1)
+		Group {
+			switch options.shape {
+				case .circular: Circular
+				case .linear( _): Linear
 			}
 		}
+		.animation(options.animation, value: progress)
+		.environmentObject(vm)
+		.onReceive(vm.timer) { _ in vm.timerTriggered.toggle() }
+		.onAppear { vm.setSpinnerIfNeeded(options) }
 	}
 	
-	private func setSpinnerIfNeeded() {
-		 guard options.isSpinner else { return }
-		 timer = Timer.publish(
-			 every: timeIntervalPerDegree,
-			 on: .main,
-			 in: .common
-		 )
-		 _ = timer.connect()
-	 }
-	
-	/// The current status for dynamic coloring.
-	private var status: (any CaseIterableAndProgressable)? {
-		statusType.map { $0.calculate(from: progress) as any CaseIterableAndProgressable }
-	}
-	
-	/// The main progress color.
-	private var color: Color {
-		status?.color ?? options.progressColor
-	}
-	
-	/// The inner progress color.
-	private var innerColor: Color? {
-		status?.innerColor ?? options.innerProgressColor
-	}
-	
-	/// The track/background color.
-	private var trackColor: Color {
-		options.trackColor
-	}
-	
-	/// Determines the width of the track.
-	private func trackWidth(_ geometry: GeometryProxy) -> CGFloat {
-		if let trackWidth = options.trackWidth { return trackWidth }
-		
-		return switch options.size {
-			case .large: 45
-			case .small: 15
+	@ViewBuilder
+	private var Circular: some View {
+		if let statusType {
+			CircularProgress(
+				progress: $progress,
+				options: options,
+				statusType: statusType
+			)
+		} else {
+			CircularProgress(
+				progress: $progress,
+				options: options
+			)
 		}
 	}
 	
-	/// Determines the width of the inner progress.
-	private func innerProgressWidth(_ geometry: GeometryProxy) -> CGFloat {
-		if let innerProgressWidth = options.innerProgressWidth { return innerProgressWidth }
-		
-		return switch options.size {
-			case .large: 5
-			case .small: 2.5
+	@ViewBuilder
+	private var Linear: some View {
+		if let statusType {
+			LinearProgress(
+				progress: $progress,
+				options: options,
+				statusType: statusType
+			)
+		} else {
+			LinearProgress(
+				progress: $progress,
+				options: options
+			)
 		}
-	}
-	
-	/// Animates the width of the progress at the start for a growing effect.
-	private func animatedWidth(
-		_ value: CGFloat,
-		_ geometry: GeometryProxy
-	) -> CGFloat {
-		guard let maxValue = options.animationMaxValue else { return trackWidth(geometry) }
-		
-		let percentage = (value / maxValue).clamped(to: 0...1)
-		return percentage * trackWidth(geometry)
-	}
-	
-	/// The time interval for each degree of spinner rotation.
-	private var timeIntervalPerDegree: TimeInterval {
-		options.spinnerCycleDuration / 360
-	}
-}
-
-/// Utility to clamp values within a range.
-private extension Comparable {
-	func clamped(to range: ClosedRange<Self>) -> Self {
-		min(max(self, range.lowerBound), range.upperBound)
 	}
 }

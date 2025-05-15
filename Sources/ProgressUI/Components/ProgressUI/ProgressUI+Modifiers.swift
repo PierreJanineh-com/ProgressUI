@@ -145,4 +145,15 @@ extension ProgressUI {
 		copy.options.spinnerCycleDuration = duration
 		return copy
 	}
+	
+	/// Sets the shape of the progress.
+	/// - Parameter shape: An enum indicating the shape of the progress (e.g. `circular`).
+	/// - Returns: A modified ProgressUI instance.
+	///
+	/// Default: ``ProgressUI/Shape/circular``.
+	public func setShape(_ shape: Shape) -> Self {
+		var copy = self
+		copy.options.shape = shape
+		return copy
+	}
 }
