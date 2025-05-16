@@ -87,8 +87,8 @@ internal struct CircularProgress: View, BaseProgress {
 					path.addRelativeArc(
 						center: center,
 						radius: radius,
-						startAngle: Angle(degrees: -90),
-						delta: Angle(degrees: options.isClockwise ? 360 : -360)
+						startAngle: startAngle,
+						delta: delta
 					)
 				}
 				
@@ -98,7 +98,7 @@ internal struct CircularProgress: View, BaseProgress {
 				
 				//MARK: - Progress
 				path
-					.trim(from: 0, to: progress)
+					.trim(from: start, to: end)
 					.stroke(
 						color,
 						style: StrokeStyle(
@@ -115,7 +115,7 @@ internal struct CircularProgress: View, BaseProgress {
 				//MARK: - Inner
 				if let innerColor {
 					path
-						.trim(from: 0, to: progress)
+						.trim(from: start, to: end)
 						.stroke(
 							innerColor,
 							style: StrokeStyle(
@@ -139,6 +139,43 @@ internal struct CircularProgress: View, BaseProgress {
 			} else {
 				rotationAngle = .degrees(rotationAngle.degrees - vm.pixelsPerStep)
 			}
+		}
+	}
+	
+	private var startAngle: Angle {
+		switch options.growFrom {
+			case .start, .end: .degrees(-90)
+			case .center: .degrees(90)
+		}
+	}
+	
+	private var delta: Angle {
+		let degrees: Double = switch options.growFrom {
+			case .start: -360
+			case .end, .center: 360
+		}
+		return Angle(degrees: degrees)
+	}
+	
+	private var start: CGFloat {
+		switch options.growFrom {
+			case .start, .end:
+				return 0
+			case .center:
+				let mid: CGFloat = 0.5
+				let half = progress / 2
+				return (mid - half).clamped(to: 0...1)
+		}
+	}
+	
+	private var end: CGFloat {
+		switch options.growFrom {
+			case .start, .end:
+				return progress
+			case .center:
+				let mid: CGFloat = 0.5
+				let half = progress / 2
+				return (mid + half).clamped(to: 0...1)
 		}
 	}
 }

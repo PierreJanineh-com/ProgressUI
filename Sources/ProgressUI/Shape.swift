@@ -7,7 +7,10 @@
 
 import SwiftUI
 
+/// The shape of the progress.
 public enum Shape {
+	/// Circular shape
 	case circular
+	/// Linear shape (progress bar)
 	case linear(_ hPadding: CGFloat = 15)
 }
