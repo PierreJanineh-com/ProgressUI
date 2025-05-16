@@ -100,6 +100,7 @@ struct LoadingView: View {
             progress: .constant(1),
             options: .init(
                 isSpinner: true,
+                growFrom: .center,
                 spinnerCycleDuration: 2,
                 progressColor: .blue
             )
@@ -111,18 +112,20 @@ struct LoadingView: View {
 ### Customization Options
 ``` swift
 let options = Options(
-    size: .large,             // Size preset
-    trackColor: .gray,        // Color of the background track
-    trackWidth: 45,           // Custom track width
-    animationMaxValue: 0.06,  // Progress threshold for width animation
-    animation: .easeInOut,    // Custom animation
-    innerProgressWidth: 5,    // Width of inner progress line
+    size: .large,              // Size preset
+    trackColor: .gray,         // Color of the background track
+    trackWidth: 45,            // Custom track width
+    animationMaxValue: 0.06,   // Progress threshold for width animation
+    animation: .easeInOut,     // Custom animation
+    innerProgressWidth: 5,     // Width of inner progress line
     innerProgressColor: .blue.opacity(0.3), // Optional inner progress color
-    progressColor: .blue,     // Main progress color
+    progressColor: .blue,      // Main progress color
     isRounded: true,           // Round or square line caps
     isClockwise: true,         // Rotation direction
+    growFrom: .end,            // Growth direction
     isSpinner: false,          // Enable spinner mode
-    spinnerCycleDuration: 2   // Duration of spinner rotation
+    spinnerCycleDuration: 2    // Duration of spinner rotation
+    shape: .circular           // Duration of spinner rotation
 )
 ```
 
