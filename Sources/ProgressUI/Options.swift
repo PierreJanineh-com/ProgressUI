@@ -95,13 +95,22 @@ public struct Options {
 	public var isRounded: Bool = true
 	
 	/**
-	 Determines whether the progress animation should be clockwise.
+	 Determines whether the progress spinning animation should be clockwise.
 	 
 	 Default: `true`.
 	 
-	 > You can set this with the modifier ``ProgressUI/ProgressUI/setIsClockwise(_:)``.
+	 > You can set this with the modifier ``ProgressUI/ProgressUI/setIsSpinner(_:isClockwise:)``.
 	 */
 	public var isClockwise: Bool = true
+	
+	/**
+	 Determines where the growing animation should go.
+	 
+	 Default: ``ProgressUI/GrowDirection/end.
+	 
+	 > You can set this with the modifier ``ProgressUI/ProgressUI/setGrow(from:)``.
+	 */
+	public var growFrom: GrowDirection = .end
 	
 	//MARK: - Spinner
 	/**
@@ -109,7 +118,7 @@ public struct Options {
 	 
 	 Default: `false`.
 	 
-	 > You can set this with the modifier ``ProgressUI/ProgressUI/setIsSpinner(_:)``.
+	 > You can set this with the modifier ``ProgressUI/ProgressUI/setIsSpinner(_:isClockwise:)``.
 	 */
 	public var isSpinner: Bool = false
 	

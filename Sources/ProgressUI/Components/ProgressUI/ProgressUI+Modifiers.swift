@@ -113,25 +113,45 @@ extension ProgressUI {
 		return copy
 	}
 	
-	/// Sets whether the progress arc should be drawn clockwise.
-	/// - Parameter isClockwise: Whether to draw clockwise (default: true).
+	/// Sets whether the progress arc should be rotated clockwise when spinning.
+	/// - Parameter isClockwise: Whether to spin clockwise (default: true).
 	/// - Returns: A modified ProgressUI instance.
 	///
 	/// Default: `true`.
+	@available(*, deprecated, message: "Use `.setIsSpinner(_:isClockwise:)` instead.")
 	public func setIsClockwise(_ isClockwise: Bool = true) -> Self {
+#if DEBUG
+		print("⚠️ [Deprecated] `setIsClockwise(\(isClockwise))` is deprecated. Use `.setIsSpinner(isClockwise:\(isClockwise))` instead.")
+#endif
 		var copy = self
 		copy.options.isClockwise = isClockwise
 		return copy
 	}
 	
+	/// Sets the direction the progress arc growth.
+	/// - Parameter from: Growing animation direction (default: .end).
+	/// - Returns: A modified ProgressUI instance.
+	///
+	/// Default: ``ProgressUI/GrowDirection/end.
+	///
+	/// > Setting this value to ``ProgressUI/GrowDirection/center`` with rotation 
+	public func setGrow(from direction: GrowDirection = .end) -> Self {
+		var copy = self
+		copy.options.growFrom = direction
+		return copy
+	}
+	
 	/// Sets whether the progress indicator should spin (spinner mode).
-	/// - Parameter isSpinner: Whether to enable spinner mode (default: true).
+	/// - Parameters:
+	///    - isSpinner: Whether to enable spinner mode (default: true).
+	///    - isClockwise: Whether to the spinning animation direction is clockwise (default: true).
 	/// - Returns: A modified ProgressUI instance.
 	///
 	/// Default: `false`.
-	public func setIsSpinner(_ isSpinner: Bool = true) -> Self {
+	public func setIsSpinner(_ isSpinner: Bool = true, isClockwise: Bool = true) -> Self {
 		var copy = self
 		copy.options.isSpinner = isSpinner
+		copy.options.isClockwise = isClockwise
 		return copy
 	}
 	

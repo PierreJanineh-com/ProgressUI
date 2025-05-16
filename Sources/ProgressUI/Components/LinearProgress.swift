@@ -83,17 +83,19 @@ internal struct LinearProgress: View, BaseProgress {
 	
 	internal var body: some View {
 		GeometryReader { geometry in
-			ZStack(alignment: .leading) {
+			let width = geometry.size.width
+			
+			ZStack(alignment: options.growFrom.alignment) {
 				//MARK: - Track
 				BaseShape
 					.fill(trackColor)
-					.frame(width: geometry.size.width, height: trackWidth)
+					.frame(width: width, height: trackWidth)
 				
 				//MARK: - Progress
 				BaseShape
 					.fill(color)
 					.frame(
-						width: geometry.size.width * progress,
+						width: width * progress,
 						height: progress > (options.animationMaxValue ?? 0) ?
 						trackWidth :
 							animatedWidth(progress)
@@ -106,10 +108,10 @@ internal struct LinearProgress: View, BaseProgress {
 					BaseShape
 						.fill(innerColor)
 						.frame(
-							width: (geometry.size.width * progress) - (hPadding * 2),
+							width: (width * progress) - (hPadding * 2),
 							height: innerProgressWidth
 						)
-						.padding(.leading, hPadding)
+						.padding(.horizontal, hPadding)
 						.transformEffect(.init(translationX: translationX, y: 0))
 				}
 			}
@@ -119,11 +121,35 @@ internal struct LinearProgress: View, BaseProgress {
 				alignment: .center
 			)
 			.mask(
-				BaseShape.frame(width: geometry.size.width, height: trackWidth)
+				BaseShape.frame(width: width, height: trackWidth)
 			)
 			.onChange(of: vm.timerTriggered) { _ in
-				if translationX >= geometry.size.width {
-					translationX = -(progress * geometry.size.width)
+				let offset: CGFloat
+				switch options.growFrom {
+					case .start:
+						offset = progress * width
+						if translationX >= width {
+							translationX = -offset
+						} else if translationX <= -offset {
+							translationX = width
+						}
+						
+					case .center:
+						let halfProgress = progressWidth(width) / 2
+						offset = halfProgress + width / 2
+						if translationX >= offset {
+							translationX = -offset
+						} else if translationX <= -offset {
+							translationX = offset
+						}
+						
+					case .end:
+						offset = progress * width
+						if translationX <= -width {
+							translationX = offset
+						} else if translationX >= offset {
+							translationX = -width
+						}
 				}
 				
 				if options.isClockwise {
@@ -133,9 +159,24 @@ internal struct LinearProgress: View, BaseProgress {
 				}
 			}
 			.onAppear {
-				translationX = -(progress * geometry.size.width)
-				vm.width = geometry.size.width
+				if options.isSpinner {
+					switch options.growFrom {
+						case .start:
+							translationX = -(progress * width)
+						case .center:
+							let progressWidth = progressWidth(width)/2 + width/2
+							translationX = options.isClockwise ? -progressWidth : progressWidth
+						case .end:
+							translationX = progress * width
+					}
+					
+					vm.width = width
+				}
 			}
 		}
+	}
+	
+	private func progressWidth(_ width: CGFloat) -> CGFloat {
+		progress * width
 	}
 }

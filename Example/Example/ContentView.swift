@@ -15,29 +15,77 @@ struct ContentView: View {
 	@State private var loadingProgress: CGFloat = 0
 	let loadingTimer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 	
+	@State private var spinnerProgress: CGFloat = 0.01
+	@State private var isForward: Bool = true
+	let spinnerTimer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+	
 	var body: some View {
 		Grid {
 			GridRow {
 				ProgressUI(progress: 0.2)
 					.setTrackWidth(20)
 #if os(watchOS)
-					.setSize(.small)
+					.setTrackWidth(10)
+#endif
+				
+				ProgressUI(progress: 0.3)
+					.setTrackWidth(30)
+					.setProgressColor(.red.opacity(0.5))
+					.setInnerProgressColor(.red)
+					.setTrackColor(.yellow)
+					.setGrow(from: .start)
+#if os(watchOS)
+					.setTrackWidth(12)
+#endif
+				
+				ProgressUI(progress: 0.01)
+					.setProgressColor(.yellow.opacity(0.5))
+					.setInnerProgressColor(.yellow)
+					.setTrackColor(.cyan)
+					.setIsSpinner(isClockwise: false)
+					.setSpinnerCycleDuration(2)
+					.setGrow(from: .start)
+#if os(watchOS)
+					.setTrackWidth(15)
+#endif
+			}
+			.padding()
+			
+			GridRow {
+				ProgressUI(progress: 0.7)
+					.setTrackWidth(20)
+					.setInnerProgressWidth(20)
+					.setTrackColor(.clear)
+					.setInnerProgressColor(.red)
+					.setShape(.linear(0))
+					.setIsSpinner(isClockwise: false)
+#if os(watchOS)
+					.setTrackWidth(15)
+					.setInnerProgressWidth(15)
+#endif
+				
+				ProgressUI(progress: 0.9)
+					.setIsRounded(false)
+					.setTrackWidth(50)
+					.setInnerProgressWidth(50)
+					.setTrackColor(.gray.opacity(0.15))
+					.setProgressColor(.teal.opacity(0.3))
+					.setInnerProgressColor(.teal)
+					.setShape(.linear(0))
+					.setGrow(from: .end)
+#if os(watchOS)
+					.setTrackWidth(15)
+					.setInnerProgressWidth(15)
 #endif
 				
 				ProgressUI(progress: 0.6)
 					.setTrackWidth(25)
 					.setShape(.linear(10))
-					.setSpinnerCycleDuration(0.0001)
 					.setSpinnerCycleDuration(1)
 					.setIsSpinner()
-				
-				ProgressUI(progress: 0.3)
-					.setProgressColor(.red.opacity(0.5))
-					.setInnerProgressColor(.red)
-					.setTrackColor(.yellow)
-					.setIsClockwise(false)
 #if os(watchOS)
-					.setSize(.small)
+					.setTrackWidth(15)
+					.setInnerProgressWidth(2)
 #endif
 			}
 			.padding()
@@ -62,8 +110,14 @@ struct ContentView: View {
 					.setInnerProgressWidth(10)
 					.setTrackColor(.black.opacity(0.1))
 					.setIsSpinner()
+					.setGrow(from: .center)
 					.setAnimationMaxValue(1)
+#if os(watchOS)
+					.setTrackWidth(8)
+					.setInnerProgressWidth(4)
+#endif
 					.onReceive(loadingTimer) { _ in
+						// Create a spinner that grows between 0 and 100 continuously
 						if loadingProgress >= 1 {
 							loadingProgress = 0
 							return
@@ -71,16 +125,35 @@ struct ContentView: View {
 						loadingProgress += 0.1
 					}
 				
-				ProgressUI(progress: 0.01)
-					.setProgressColor(.yellow.opacity(0.5))
-					.setInnerProgressColor(.yellow)
-					.setTrackColor(.cyan)
-					.setIsSpinner()
-					.setSpinnerCycleDuration(2)
-					.setIsClockwise(false)
+				ProgressUI(progress: $spinnerProgress)
+					.setTrackWidth(15)
+					.setAnimationMaxValue(nil)
+					.setTrackColor(.clear)
+					.setProgressColor(.black)
+					.setIsSpinner(isClockwise: false)
+					.setGrow(from: .center)
+					.setIsRounded(false)
+					.setSpinnerCycleDuration(1)
 #if os(watchOS)
-					.setSize(.small)
+					.setTrackWidth(5)
 #endif
+					.onReceive(spinnerTimer) { _ in
+						// Create a spinner that grows between 0.1 and 0.7 continuously
+						var progress = spinnerProgress * 100
+						let step = 80 / (150 * 0.1)
+						if isForward {
+							progress += step
+						} else if !isForward {
+							progress -= step
+						}
+						spinnerProgress = progress / 100
+						
+						if progress <= 1 {
+							isForward = true
+						} else if progress >= 80 {
+							isForward = false
+						}
+					}
 			}
 			.padding()
 		}
@@ -91,60 +164,4 @@ struct ContentView: View {
 
 #Preview {
 	ContentView()
-}
-
-
-enum Status: CaseIterable, Progressable {
-	case Excellent
-	case Normal
-	case SemiNormal
-	case Bad
-	case Critical
-	case Danger
-	
-	/**
-	 Get status color.
-	 */
-	var color: Color {
-		return switch(self){
-			case .Excellent:	.green.opacity(0.8)
-			case .Normal:		.yellow.opacity(0.8)
-			case .SemiNormal:	.orange.opacity(0.8)
-			case .Bad:			.red.opacity(0.8)
-			case .Critical:		.purple.opacity(0.8)
-			case .Danger:		.black.opacity(0.8)
-		}
-	}
-	
-	/**
-	 Get status color.
-	 */
-	var innerColor: Color? {
-		return switch(self){
-			case .Excellent:	.green
-			case .Normal:		.yellow
-			case .SemiNormal:	.orange
-			case .Bad:			.red
-			case .Critical:		.purple
-			case .Danger:		.black
-		}
-	}
-	
-	/**
-	 Static func to get instance of enum by providing progress
-	 - Parameters:
-	   - progress: CGFloat (0.0 - 1.0) progress percentage in decimal.
-	 */
-	static func calculate(from progress: CGFloat) -> Status {
-		let level: CGFloat = CGFloat(1) / CGFloat(Status.allCases.count)
-		
-		return switch progress {
-			case 0...level:						Excellent
-			case level...(level * 2): 			Normal
-			case (level * 2)...(level * 3):		SemiNormal
-			case (level * 3)...(level * 4):		Bad
-			case (level * 4)...(level * 5):		Critical
-			default:							Danger
-		}
-	}
 }
