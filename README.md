@@ -2,6 +2,7 @@
 
 [![](https://img.shields.io/endpoint?url=https://swiftpackageindex.com/api/packages/PierreJanineh-com/ProgressUI/badge?type=swift-versions)](https://swiftpackageindex.com/pierrejanineh-com/ProgressUI)
 [![](https://img.shields.io/endpoint?url=https://swiftpackageindex.com/api/packages/PierreJanineh-com/ProgressUI/badge?type=platforms)](https://swiftpackageindex.com/pierrejanineh-com/ProgressUI)
+[![SPM](https://img.shields.io/badge/SPM-Compatible-brightgreen.svg)](https://swiftpackageindex.com/pierrejanineh-com/ProgressUI)
 [![](https://img.shields.io/github/v/release/PierreJanineh-com/ProgressUI)]()
 
 <img src="./example.gif" alt="Example ProgressUI" width="400" />
