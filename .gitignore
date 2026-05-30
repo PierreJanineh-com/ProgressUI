@@ -6,3 +6,7 @@ DerivedData/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
+# Resolved versions — library does not pin a lockfile for consumers.
+Package.resolved
+# Generated DocC site (built and deployed by the Documentation workflow).
+/docs

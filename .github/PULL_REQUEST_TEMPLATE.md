@@ -30,11 +30,12 @@ _Select all that apply:_
 - [ ] Other: ___
 
 **Test Configuration**
-- OS: `iOS 18`
+- OS: `iOS 26`
 - Device: `iPhone 16`
-- Environment: `Simulator, Xcode 15`
+- Environment: `Simulator, Xcode 26`
 - Additional notes: `e.g. Dark mode, background refresh, etc.`
-- ---
+
+---
 
 ## 📎 Checklist  
 Please confirm the following before requesting review:
