@@ -13,7 +13,6 @@ body:
       label: Describe the bug..
       description: Also tell us, what did you expect to happen?
       placeholder: Tell us what you see!
-      value: "A bug happened!"
     validations:
       required: true
   - type: textarea
@@ -45,9 +44,17 @@ body:
     validations:
       required: true
   - type: input
+    id: version
+    attributes:
+      label: Which ProgressUI version are you using?
+      description: The release tag, or the commit SHA if building from a branch.
+      placeholder: "1.2.0"
+    validations:
+      required: true
+  - type: input
     id: xcode
     attributes:
       label: What Xcode version do you use?
-      placeholder: "16.0"
+      placeholder: "26.0"
     validations:
       required: true
