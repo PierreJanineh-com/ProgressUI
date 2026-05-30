@@ -15,11 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   initializer, `Progressable.calculate(from:)` bucketing, and `GrowDirection`
   alignment mapping.
 - DocC catalog with a landing page and curated topics.
+- DocC documentation published to GitHub Pages via a Documentation workflow
+  (using `swift-docc-plugin`).
 - Contribution guide, issue/PR templates, and a `CHANGELOG`.
 
 ### Changed
 - CI now runs the test suite and builds across every supported platform
-  (iOS, macOS, macCatalyst, watchOS, tvOS, visionOS).
+  (iOS, macOS, macCatalyst, watchOS, tvOS, visionOS), and avoids redundant
+  runs (push builds `main` only; superseded runs are cancelled).
 
 ### Fixed
 - Corrected the README "Dynamic Colors" and "Customization Options" examples,
