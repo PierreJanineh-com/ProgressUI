@@ -3,8 +3,15 @@ name: Build & Test
 on:
   pull_request:
     branches: [main, develop]
+  # `develop` is only ever reached via PR (already tested above), so build on
+  # push for `main` only — release merges/tags. Avoids double runs per merge.
   push:
-    branches: [main, develop]
+    branches: [main]
+
+# Cancel superseded runs for the same ref (e.g. rapid pushes to an open PR).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
