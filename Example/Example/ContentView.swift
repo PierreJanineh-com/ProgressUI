@@ -8,7 +8,26 @@
 import SwiftUI
 import ProgressUI
 
+extension ContentView {
+	final class ViewModel: ObservableObject {
+		@Published var value: CGFloat = 0
+		
+		init() {
+			loop()
+		}
+		
+		private func loop() {
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+				self.value = .random(in: 0...1)
+				self.loop()
+			}
+		}
+	}
+}
+
 struct ContentView: View {
+	@StateObject private var vm: ViewModel = .init()
+	
 	@State private var liveProgress: CGFloat = 0
 	let liveTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 	
@@ -105,17 +124,42 @@ struct ContentView: View {
 				}
 				.aspectRatio(1, contentMode: .fit)
 				
-				ProgressUI(progress: $loadingProgress, statusType: Status.self)
-					.setTrackWidth(25)
-					.setInnerProgressWidth(10)
-					.setTrackColor(.black.opacity(0.1))
-					.setIsSpinner()
-					.setGrow(from: .center)
-					.setAnimationMaxValue(1)
-#if os(watchOS)
-					.setTrackWidth(8)
-					.setInnerProgressWidth(4)
-#endif
+				TimelineView(.animation) { context in
+					ProgressUI(progress: vm.value)
+						.setSize(.small)
+						.setShape(.linear(.zero))
+						.setIsRounded(true)
+						.setIsSpinner(false)
+						.setInnerProgressWidth(8.0)
+						.setInnerProgressColor(Color.red)
+						.setTrackWidth(8.0)
+						.setGrow(from: .start)
+						.setTrackColor(.yellow)
+						.frame(maxHeight: 8.0)
+				}
+				
+				GeometryReader { geometry in
+					ProgressUI(progress: 0.5)
+						.setShape(.linear(.zero))
+						.setIsSpinner(false)
+						.setInnerProgressWidth(0)
+						.setProgressColor(.red)
+						.setTrackColor(.yellow)
+						.setAnimationMaxValue(getPercentage(geometry.size.width))
+						.setTrackWidth(8)
+				}.frame(height: 8.0)
+				//				ProgressUI(progress: $loadingProgress, statusType: Status.self)
+				//					.setShape(.linear())
+				//					.setTrackWidth(25)
+				//					.setInnerProgressWidth(10)
+				//					.setTrackColor(.black.opacity(0.1))
+				//					.setIsSpinner()
+				//					.setGrow(from: .center)
+				//					.setAnimationMaxValue(1)
+				//#if os(watchOS)
+				//					.setTrackWidth(8)
+				//					.setInnerProgressWidth(4)
+				//#endif
 					.onReceive(loadingTimer) { _ in
 						// Create a spinner that grows between 0 and 100 continuously
 						if loadingProgress >= 1 {
@@ -159,6 +203,10 @@ struct ContentView: View {
 		}
 		.frame(maxWidth: .infinity, alignment: .center)
 		.background(.white)
+	}
+	
+	private func getPercentage(_ width: CGFloat) -> CGFloat {
+		8 / width
 	}
 }
 
