@@ -2,6 +2,8 @@
 //  ProgressableTests.swift
 //  ProgressUI
 //
+//  Created by Pierre Janineh on 30/05/2026.
+//
 
 import XCTest
 import SwiftUI
