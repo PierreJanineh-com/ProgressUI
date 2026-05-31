@@ -8,6 +8,10 @@ on:
   push:
     branches: [main]
 
+# Least-privilege GITHUB_TOKEN — these jobs only check out and build.
+permissions:
+  contents: read
+
 # Cancel superseded runs for the same ref (e.g. rapid pushes to an open PR).
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
