@@ -2,19 +2,64 @@ name: Build & Test
 
 on:
   pull_request:
+    branches: [main, develop]
+  # `develop` is only ever reached via PR (already tested above), so build on
+  # push for `main` only — release merges/tags. Avoids double runs per merge.
+  push:
     branches: [main]
 
+# Least-privilege GITHUB_TOKEN — these jobs only check out and build.
+permissions:
+  contents: read
+
+# Cancel superseded runs for the same ref (e.g. rapid pushes to an open PR).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  test:
+    name: SwiftPM build & test
     runs-on: macos-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Show Xcode version
+      - name: Show toolchain versions
         run: |
           xcodebuild -version
           swift --version
 
-      - name: Build Swift Package
-        run: swift build --build-tests
+      - name: Build
+        run: swift build
+
+      - name: Test
+        run: swift test
+
+  platforms:
+    name: Build (${{ matrix.name }})
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: iOS
+            destination: 'generic/platform=iOS Simulator'
+          - name: macOS
+            destination: 'platform=macOS'
+          - name: macCatalyst
+            destination: 'platform=macOS,variant=Mac Catalyst'
+          - name: watchOS
+            destination: 'generic/platform=watchOS Simulator'
+          - name: tvOS
+            destination: 'generic/platform=tvOS Simulator'
+          - name: visionOS
+            destination: 'generic/platform=visionOS Simulator'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build ProgressUI for ${{ matrix.name }}
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -scheme ProgressUI \
+            -destination '${{ matrix.destination }}'

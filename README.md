@@ -53,11 +53,9 @@ enum StorageStatus: CaseIterable, Progressable {
     case warning
     case critical
     case full
-    
-    var color: Color { innerColor.opacity(0.4) }
-    
-    // Optional: Add inner color for layered effect
-    var innerColor: Color? {
+
+    // Main (outer) progress color
+    var color: Color {
         switch self {
         case .safe:     return .green
         case .warning:  return .yellow
@@ -65,17 +63,16 @@ enum StorageStatus: CaseIterable, Progressable {
         case .full:     return .red
         }
     }
-    
-    static func calculate(from progress: CGFloat) -> Status {
-        let level: CGFloat = CGFloat(1) / CGFloat(Status.allCases.count)
-        
-        return switch progress {
-            case 0...level:                 Excellent
-            case level...(level * 2):       Normal
-            case (level * 2)...(level * 3): SemiNormal
-            case (level * 3)...(level * 4): Bad
-            case (level * 4)...(level * 5): Critical
-            default:                        Danger
+
+    // Optional: inner color for a layered effect
+    var innerColor: Color? { color.opacity(0.4) }
+
+    static func calculate(from progress: CGFloat) -> StorageStatus {
+        switch progress {
+        case ..<0.25: return .safe
+        case ..<0.5:  return .warning
+        case ..<0.75: return .critical
+        default:      return .full
         }
     }
 }
@@ -125,8 +122,8 @@ let options = Options(
     isClockwise: true,         // Rotation direction
     growFrom: .end,            // Growth direction
     isSpinner: false,          // Enable spinner mode
-    spinnerCycleDuration: 2    // Duration of spinner rotation
-    shape: .circular           // Duration of spinner rotation
+    spinnerCycleDuration: 2,   // Duration of a full spinner cycle (seconds)
+    shape: .circular           // Progress shape (.circular or .linear)
 )
 ```
 
