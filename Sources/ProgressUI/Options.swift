@@ -68,9 +68,9 @@ public struct Options {
 	 
 	 Default: ``ProgressSize/large``.
 	 
-	 ``ProgressSize/large`` > ``trackWidth`` `= 45`,  ``progressLineWidth`` `= 10`,  ``progressInnerLineWidth`` `= 5`,   ``radius`` `= 60`
-	 
-	 ``ProgressSize/small`` > ``trackWidth`` = `15`,  ``progressLineWidth`` `= 5`,  ``progressInnerLineWidth`` `= 2.5`,  ``radius`` `= 30`
+	 ``ProgressSize/large`` > `trackWidth = 45`, `progressLineWidth = 10`, `progressInnerLineWidth = 5`, `radius = 60`
+
+	 ``ProgressSize/small`` > `trackWidth = 15`, `progressLineWidth = 5`, `progressInnerLineWidth = 2.5`, `radius = 30`
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setSize(_:)``.
 	 */
@@ -160,7 +160,7 @@ public struct Options {
 	/**
 	 Determines where the growing animation should go.
 	 
-	 Default: ``ProgressUI/GrowDirection/end.
+	 Default: ``GrowDirection/end``.
 	 
 	 > You can set this with the modifier ``ProgressUI/ProgressUI/setGrow(from:)``.
 	 */

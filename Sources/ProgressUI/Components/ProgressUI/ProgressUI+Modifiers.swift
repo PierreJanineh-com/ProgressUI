@@ -14,9 +14,9 @@ extension ProgressUI {
 	///
 	/// Default: ``ProgressSize/large``.
 	///
-	/// ``ProgressSize/large`` > ``trackWidth`` `= 45`,  ``progressLineWidth`` `= 10`,  ``progressInnerLineWidth`` `= 5`,   ``radius`` `= 60`
+	/// ``ProgressSize/large`` > `trackWidth = 45`, `progressLineWidth = 10`, `progressInnerLineWidth = 5`, `radius = 60`
 	///
-	/// ``ProgressSize/small`` > ``trackWidth`` = `15`,  ``progressLineWidth`` `= 5`,  ``progressInnerLineWidth`` `= 2.5`,  ``radius`` `= 30`
+	/// ``ProgressSize/small`` > `trackWidth = 15`, `progressLineWidth = 5`, `progressInnerLineWidth = 2.5`, `radius = 30`
 	public func setSize(_ size: ProgressSize) -> Self {
 		var copy = self
 		copy.options.size = size
@@ -129,10 +129,10 @@ extension ProgressUI {
 	}
 	
 	/// Sets the direction the progress arc growth.
-	/// - Parameter from: Growing animation direction (default: .end).
+	/// - Parameter direction: Growing animation direction (default: .end).
 	/// - Returns: A modified ProgressUI instance.
 	///
-	/// Default: ``ProgressUI/GrowDirection/end.
+	/// Default: ``GrowDirection/end``.
 	///
 	/// > Setting this value to ``ProgressUI/GrowDirection/center`` with rotation 
 	public func setGrow(from direction: GrowDirection = .end) -> Self {

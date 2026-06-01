@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-05-31
+
 ### Added
-- Public memberwise initializer for ``Options``, allowing consumers to construct
+- Public memberwise initializer for `Options`, allowing consumers to construct
   a configuration directly (e.g. `Options(progressColor: .blue)`) instead of
   only through the `set…` modifiers.
 - Unit test target (`ProgressUITests`) covering `Options` defaults, the new
@@ -27,3 +29,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Corrected the README "Dynamic Colors" and "Customization Options" examples,
   which previously did not compile.
+- Resolved DocC symbol-link warnings in the `Options.size`/`setSize(_:)` size
+  tables and the `GrowDirection.end` default links; DocC now builds cleanly.
+
+### Security
+- Set a least-privilege `GITHUB_TOKEN` (`contents: read`) on the Build & Test
+  workflow, resolving the CodeQL `actions/missing-workflow-permissions` alerts.
+
+[Unreleased]: https://github.com/PierreJanineh-com/ProgressUI/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/PierreJanineh-com/ProgressUI/compare/1.0.4...1.1.0
