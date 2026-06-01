@@ -33,6 +33,25 @@ jobs:
             --hosting-base-path ProgressUI \
             --output-path ./docs
 
+      # DocC has no landing page at the site root, so the bare Pages URL renders
+      # "page can't be found". Redirect the root to the module's documentation.
+      - name: Redirect site root to the module documentation
+        run: |
+          cat > ./docs/index.html <<'HTML'
+          <!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8">
+              <title>ProgressUI</title>
+              <meta http-equiv="refresh" content="0; url=documentation/progressui">
+              <link rel="canonical" href="documentation/progressui">
+            </head>
+            <body>
+              Redirecting to the <a href="documentation/progressui">ProgressUI documentation</a>…
+            </body>
+          </html>
+          HTML
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./docs
